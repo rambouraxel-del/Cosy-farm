@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#213d30" />
+  <title>Cosy Farm — prototype</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <script src="https://cdn.babylonjs.com/babylon.js"></script>
+</head>
+<body>
+  <main id="app">
+    <canvas id="world" aria-label="Terrain de Cosy Farm, déplacement au doigt"></canvas>
+    <header class="topbar">
+      <div class="brand"><span class="brand-icon">◈</span><span>Cosy Farm <small>PROTOTYPE 3D</small></span></div>
+      <div class="hud">
+        <span id="dayHud">Lundi · Jour 1</span>
+        <span id="coinHud">◉ 280</span>
+        <span id="energyHud">⚡ 15/15</span>
+      </div>
+    </header>
+    <div id="hint" class="hint" role="status">Glisse pour explorer · Pince pour zoomer · Touche un objet</div>
+    <button id="cancelPlacement" class="cancel-placement hidden">Annuler le placement</button>
+    <nav class="bottomnav" aria-label="Actions principales">
+      <button data-panel="shop"><span>⌂</span>Boutique</button>
+      <button data-panel="hens"><span>♧</span>Poules</button>
+      <button data-panel="nests"><span>◯</span>Nids</button>
+      <button data-panel="market"><span>◈</span>Marché</button>
+      <button data-panel="farm"><span>☷</span>Ferme</button>
+      <button data-act="sleep" class="sleep"><span>☾</span>Nuit</button>
+    </nav>
+    <aside id="panel" class="panel hidden" aria-live="polite"></aside>
+    <div id="toast" class="toast hidden" role="status"></div>
+  </main>
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
