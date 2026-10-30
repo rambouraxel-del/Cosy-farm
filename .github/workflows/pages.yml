@@ -1,0 +1,33 @@
+name: Aperçu jouable sur GitHub Pages
+on:
+  push:
+    branches:
+      - feat/first-playable-prototype
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: cosy-farm-pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Activer les Pages si possible
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Publier les fichiers du prototype
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - name: Déployer l'aperçu
+        id: deploy
+        uses: actions/deploy-pages@v4
