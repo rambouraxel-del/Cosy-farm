@@ -227,6 +227,16 @@ assert.equal(await page.locator("#sleepBtn").isDisabled(), true);
 await shot("14-energie-vide");
 log("énergie à 0 : nuit désactivée avec compte à rebours");
 
+// -- 11. Recommencer : annuler garde la ferme, confirmer l'efface
+await page.locator('.tab[data-panel="farm"]').tap(); await wait(300);
+await act("reset"); await page.waitForSelector("#modal:not(.hidden)");
+await page.locator('[data-ask="0"]').tap(); await wait(200);
+assert.equal((await st()).hens.length, 4);
+await act("reset"); await page.waitForSelector("#modal:not(.hidden)");
+await page.locator('[data-ask="1"]').tap(); await wait(400);
+s = await st(); assert.equal(s.hens.length, 0); assert.equal(s.coins, 280); assert.equal(s.day, 1);
+log("nouvelle partie : annulation et confirmation");
+
 // -- Bilan
 const real = problems.filter((p) => !/favicon|Failed to load resource/.test(p));
 assert.deepEqual(real, [], "aucune erreur console : " + real.join(" | "));

@@ -202,12 +202,16 @@ const actions = {
   "open-hen": (b) => openPanel("hen", { selectedHen: b.dataset.id }),
   pet: (b) => { const r = S.petHen(state, b.dataset.id); if (commit(r)) world.emote(b.dataset.id); },
   care: (b) => commit(S.careHen(state, b.dataset.id)),
-  euthanize: (b) => {
+  euthanize: async (b) => {
     const h = S.findHen(state, b.dataset.id);
-    if (h && confirm(`Dire adieu à ${h.name} ? Cette décision est définitive.`)) { const r = S.euthanize(state, b.dataset.id); if (commit(r)) openPanel("hens"); }
+    if (h && await askConfirm(`Dire adieu à ${esc(h.name)} ?`, "Cette décision est définitive.", "Lui dire adieu")) { const r = S.euthanize(state, b.dataset.id); if (commit(r)) openPanel("hens"); }
   },
   "toggle-mortality": () => { state.settings.mortality = !state.settings.mortality; commit({ ok: true, msg: state.settings.mortality ? "Les poules très âgées peuvent désormais s'éteindre." : "Plus aucune mort naturelle." }); },
-  reset: () => { if (confirm("Effacer cette ferme et recommencer à zéro ?")) { state = S.resetGame(); closePanel(); world.sync(state); save(); refresh(); } },
+  reset: async () => {
+    if (await askConfirm("Recommencer à zéro ?", "La ferme actuelle sera effacée définitivement.", "Effacer")) {
+      state = S.resetGame(); closePanel(); world.sync(state); save(); refresh(); openPanel("shop");
+    }
+  },
   "market-open": () => { const r = S.openMarket(state, ctx.marketPrice || S.referencePrice(state)); commit(r, { silent: true }); },
   "sale-accept": () => commit(S.marketDecision(state, "accept")),
   "sale-counter": () => commit(S.marketDecision(state, "counter")),
@@ -243,6 +247,19 @@ $("sheet").addEventListener("change", (e) => {
     save(); renderPanel();
   }
 });
+
+// Boîte de confirmation intégrée (fonctionne partout, contrairement à window.confirm).
+function askConfirm(title, text, okLabel) {
+  return new Promise((resolve) => {
+    const m = $("modal");
+    m.innerHTML = `<div class="modal-card"><h2>${title}</h2><div class="sheet-body"><p>${text}</p></div><div class="foot"><button class="btn danger" data-ask="1">${okLabel}</button><div style="height:8px"></div><button class="btn ghost" data-ask="0">Annuler</button></div></div>`;
+    m.classList.remove("hidden");
+    m.onclick = (e) => {
+      const b = e.target.closest("[data-ask]"); if (!b) return;
+      m.onclick = null; closeModal(); resolve(b.dataset.ask === "1");
+    };
+  });
+}
 
 // ---- nuit & récapitulatif ----------------------------------------------------
 function closeModal() { $("modal").classList.add("hidden"); $("modal").innerHTML = ""; refresh(); }

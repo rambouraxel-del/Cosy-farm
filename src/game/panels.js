@@ -111,7 +111,7 @@ function market(s, ctx) {
       `<p class="muted">Client ${sess.index + 1}/${sess.visitors.length} · ${stock} œuf(s) en stock · gagné : ${sess.earned} 🪙</p>` +
       (sess.message ? `<p class="muted">${esc(sess.message)}</p>` : "") +
       card(`<b>${esc(v.name)}</b> s'arrête devant ton étal.<p>« Je voudrais ${qty} œuf${qty > 1 ? "s" : ""}. ` +
-        (haggle ? `Ton prix, ${sess.price} 🪙, est un peu haut… je propose <b>${offer} 🪙</b> pièce.` : `Ton prix de <b>${sess.price} 🪙</b> me va.`) + " »</p>" +
+        (haggle ? `${sess.price} 🪙 l'œuf, c'est un peu haut… je te propose <b>${offer} 🪙</b> l'œuf.` : `Ton prix de <b>${sess.price} 🪙</b> l'œuf me va.`) + " »</p>" +
         `<div class="row">${btn(`Vendre à ${offer} 🪙`, "sale-accept", "primary")}${haggle ? btn("Négocier", "sale-counter", "warm") : ""}${btn("Refuser", "sale-skip", "")}</div>`) +
       btn("Fermer le stand", "market-close", "ghost") };
   }

@@ -80,7 +80,7 @@ export function marketDecision(s, choice) {
     if (mid <= v.wtp * (1 + 0.3 * v.haggle)) {
       const r = sell(s, qty, mid);
       m.sold += r.sold; m.earned += r.earned;
-      msg = `Marché conclu : ${v.name} prend ${r.sold} œuf(s) à ${mid} pièces pièce.`;
+      msg = `Marché conclu : ${v.name} prend ${r.sold} œuf(s) à ${mid} pièces l'œuf.`;
     } else {
       msg = `${v.name} trouve ça trop cher et s'en va.`;
     }
