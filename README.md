@@ -1,34 +1,35 @@
-# Cosy Farm — prototype V1
+# 🐔 Cosy Farm
 
-Jeu de gestion d'élevage 3D, cozy et local : la qualité des mécaniques passe avant l'esthétique.
+Jeu de gestion 3D « cozy » centré sur l'élevage de poules, conçu pour **iPhone / Safari**.
+Version de test : une seule ferme, sauvegarde locale automatique, aucun serveur, aucun achat réel.
 
-## Tester
+## Jouer
+- **Test en ligne** : voir l'URL GitHub Pages dans la description de la PR (ou `https://<compte>.github.io/Cosy-farm/`).
+- **En local** : `npm install && npm run dev` puis ouvrir l'adresse affichée sur le téléphone (même Wi-Fi).
 
-La version de travail se trouve sur la branche `feat/first-playable-prototype`. Une action GitHub Pages tente de publier cette branche ; si Pages n'est pas activé pour le dépôt, il faut l'autoriser dans **Settings → Pages → GitHub Actions**. Il faut une connexion Internet pour charger Babylon.js au premier lancement.
+## Boucle de jeu
+1. **Construire** (Boutique 🛒) : enclos, poulailler, mangeoire, abreuvoir — placement libre, déplaçables.
+2. **Adopter** des poules : réforme (économique), jeunes poules, poussins (grandissent).
+3. **Entretenir** (Ferme 🌾) : graines, eau, litière ; caresser et soigner (🐔 → fiche de la poule).
+4. **Passer la nuit** 🌙 (1 énergie, max 15, +1 / 10 min réelles, y compris appli fermée) : besoins, âge, ponte secrète.
+5. **Récolter** : toucher le poulailler → vue des nids → toucher chaque œuf. Œufs égarés dans l'herbe si nids sales ou surpeuplement.
+6. **Vendre** au marché du dimanche 🧺 : prix libre, clients simulés, négociation.
 
-## Fonctionnement
-
-- Caméra 3D en hauteur : déplacer au doigt, pincer pour zoomer ; toucher les poules et bâtiments.
-- Départ avec **280 pièces**, un terrain vide, et la boutique pour construire un enclos, un poulailler, une mangeoire et un abreuvoir.
-- Acheter des poules de réforme, des jeunes poules ou des poussins ; chacune a son prénom, un trait de caractère, des besoins, une fiche personnelle et des notes.
-- Caresses à gain journalier limité, nourriture, eau, nettoyage, soins vétérinaires.
-- Appuyer sur **Nuit** pour faire avancer le calendrier ; 15 énergies au maximum et une recharge toutes les 10 minutes.
-- Œufs cachés dans les nids (ouvrir le poulailler) ou dans l'herbe. Récolte manuelle, possibilité de marquer un œuf pour la couvaison future.
-- Le **dimanche**, mini-marché avec visiteurs, prix et négociations.
-- Sauvegarde automatique dans le navigateur (une seule ferme, pas encore de synchronisation ni export).
-
-## À savoir
-
-La 3D est volontairement représentée par des formes primitives. C'est une **première tranche jouable**, non la V1 finale : la vraie reproduction, l'éclosion, les tours, les espèces supplémentaires, les décès naturels optionnels, la progression des bâtiments et les graphismes détaillés ne sont pas implémentés. L'utilisation du stockage local signifie que vider les données Safari peut effacer la sauvegarde.
+Caméra : glisser = déplacer, pincer = zoomer, toucher = sélectionner.
 
 ## Développement
-
-Aucune installation nécessaire pour ouvrir `index.html` depuis un serveur statique. Le jeu utilise Babylon.js via CDN. Pour vérifier la simulation avec Node 22+ :
-
-```bash
-npm test
 ```
+npm install
+npm run dev        # serveur local
+npm test           # tests de la simulation (node:test)
+npm run build      # build de production dans dist/
+npm run e2e        # parcours complet en navigateur (iPhone émulé), captures dans e2e/shots/
+```
+Architecture :
+- `src/sim/` — simulation pure (sans DOM), déterministe, état 100 % sérialisable (graine aléatoire incluse). Ponte, besoins, maladies, marché, couvaison/généalogie (prévues pour les coqs).
+- `src/game/` — rendu Three.js (monde, vue des nids, modèles primitifs) et panneaux d'interface.
+- `src/main.js` — liaison entre interface, rendu et simulation.
+- `tests/` — tests unitaires de la simulation ; `e2e/` — test Playwright.
 
-`src/sim.js` contient la logique du jeu ; `src/main.js` la scène Babylon.js et l'interface ; `tests/` les tests.
-
-La branche de travail n'est pas fusionnée à `main` sans validation.
+## Hors périmètre de cette version
+Reproduction complète (coq, couvaison avec éclosion jouable), apprentissage de tours, potager, autres espèces, décorations, direction artistique définitive.
