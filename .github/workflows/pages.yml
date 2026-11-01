@@ -1,7 +1,7 @@
 name: Déploiement GitHub Pages
 on:
   push:
-    branches: [feat/first-playable-prototype]
+    branches: [main, feat/first-playable-prototype]
   workflow_dispatch:
 permissions:
   contents: read
