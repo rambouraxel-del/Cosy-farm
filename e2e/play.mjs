@@ -160,6 +160,7 @@ async function morning(collect = true) {
   }
   return collected;
 }
+const S_eggsLeft = (st) => st.eggs.filter((e) => e.status === "nest" || e.status === "grass").length;
 let totalCollected = 0, shotNests = false;
 for (let d = 0; d < 6; d++) {
   // entretien quotidien
@@ -178,8 +179,12 @@ for (let d = 0; d < 6; d++) {
   // œufs cachés dans l'herbe : on les touche dans la ferme
   const grass = await page.evaluate(() => window.__cosy.S.eggsOnGrass(window.__cosy.state).map((e) => e.id));
   for (const id of grass) {
-    const p = await page.evaluate((i) => window.__cosy.world.screenOfEgg(i), id);
-    if (p) { await tapAt(p); await wait(300); totalCollected++; }
+    for (let attempt = 0; attempt < 5; attempt++) {
+      const p = await page.evaluate((i) => window.__cosy.world.screenOfEgg(i), id);
+      if (!p) break;
+      await tapAt(p); await wait(500);
+      if (!(await page.evaluate((i) => window.__cosy.S.eggsOnGrass(window.__cosy.state).some((e) => e.id === i), id))) break;
+    }
   }
   // achat de graines si besoin
   const cur = await st();
@@ -188,8 +193,9 @@ for (let d = 0; d < 6; d++) {
 }
 s = await st();
 assert.equal(s.day, 7); assert.equal(s.energy, 15 - 6);
+totalCollected = s.stats.eggsCollected;
 assert.ok(totalCollected > 0, "des œufs ont été récoltés : " + totalCollected);
-assert.equal(s.stats.eggsCollected, totalCollected);
+assert.equal(S_eggsLeft(s), 0, "tous les œufs visibles ont été ramassés");
 log(`6 nuits jouées, ${totalCollected} œufs récoltés un par un (nids et herbe)`);
 
 // -- 8. Marché du dimanche

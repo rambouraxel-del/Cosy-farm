@@ -232,10 +232,14 @@ export function createWorld(canvas, { onTap }) {
     return { x: r.left + (v.x * 0.5 + 0.5) * r.width, y: r.top + (-v.y * 0.5 + 0.5) * r.height };
   }
   function pickAt(clientX, clientY) {
-    // 1. poules et œufs : tolérance en pixels (doigts)
+    // 1. œufs puis poules : tolérance en pixels (doigts). Un œuf prime sur une poule posée dessus.
+    for (const [id, m] of eggMeshes) {
+      if (m.userData.popping) continue;
+      const p = screenOf(m, 0.2);
+      if (Math.hypot(p.x - clientX, p.y - clientY) < 40) return { type: "egg", id };
+    }
     let best = null, bestD = 44;
     for (const a of actors.values()) { const p = screenOf(a.root, 0.7 * a.root.scale.x); const d = Math.hypot(p.x - clientX, p.y - clientY); if (d < bestD) { bestD = d; best = { type: "hen", id: a.id }; } }
-    for (const [id, m] of eggMeshes) { if (m.userData.popping) continue; const p = screenOf(m, 0.2); const d = Math.hypot(p.x - clientX, p.y - clientY) - 6; if (d < bestD) { bestD = d; best = { type: "egg", id }; } }
     if (best) return best;
     // 2. bâtiments
     const r = canvas.getBoundingClientRect();
